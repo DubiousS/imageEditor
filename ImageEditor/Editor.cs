@@ -13,12 +13,12 @@ namespace ImageEditor
 {
     class Editor
     {
-        public Image<Bgr, byte> sourceImage;
+        private Image<Bgr, byte> sourceImage;
         private Image<Bgr, byte> defaulImage;
 
         public Editor() {}
 
-        public void readImage()
+        public Editor readImage()
         {
             var openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Файлы изображений (*.jpg, *.jpeg, *.jpe, *.jfif, *.png) | *.jpg; *.jpeg; *.jpe; *.jfif; *.png";
@@ -32,64 +32,83 @@ namespace ImageEditor
                     defaulImage = sourceImage.Clone();
 
                 }
-            } catch(Exception error) {}
+            } catch(Exception error) {
+                sourceImage = new Image<Bgr, byte>(640, 480);
+            }
+
+            return this.clone();
+        }
+
+        public Editor clone() {
+            Editor clonable = new Editor();
+            clonable.sourceImage = this.sourceImage.Clone();
+            clonable.defaulImage = this.defaulImage.Clone();
+            return clonable;
         }
 
 
-        public Image<Bgr, byte> imageResize(int width, int height)
+        public Editor imageResize(int width, int height)
         {
-            sourceImage = this.sourceImage.Resize(width, height, Inter.Linear);
-            return sourceImage;
+            this.sourceImage = this.sourceImage.Resize(width, height, Inter.Linear);
+            return this.clone();
         }
 
 
-        public Image<Bgr, byte> removeNoises()
+        public Image<Bgr, byte> getImage()
         {
-            return this.sourceImage.PyrDown().PyrUp();
+            return this.sourceImage.Clone();
         }
 
-        public Image<Bgr, byte> resetImage()
+        static byte toFourColor(byte color)
         {
-            sourceImage = defaulImage;
-            return sourceImage;
+            if (color <= 50)
+                return 0;
+            else if (color <= 100)
+                return 25;
+            else if (color <= 150)
+                return 180;
+            else if (color <= 200)
+                return 210;
+
+           return 255;
         }
 
-        public Image<Bgr, byte> cannyEffect(double cannyThreshold, double cannyThresholdLinking)
+
+        public Editor removeNoises()
+        {
+            this.sourceImage.PyrDown().PyrUp();
+            return this.clone();
+        }
+
+        public Editor resetImage()
+        {
+            this.sourceImage = this.defaulImage.Clone();
+            return this.clone();
+        }
+
+        public Editor cannyEffect(double cannyThreshold, double cannyThresholdLinking)
         {
             this.sourceImage = this.sourceImage
                 .Canny(cannyThreshold, cannyThresholdLinking)
                 .Convert<Bgr, byte>();
-            return this.sourceImage;
+            return this.clone();
         }
 
-        public Image<Bgr, byte> cellShading()
+        public Editor cellShading()
         {
-            var resultImage = sourceImage.Sub(this.cannyEffect(80, 40));
+            Image<Bgr, byte> sourceImage = this.sourceImage.Sub(this.cannyEffect(80, 40).getImage());
 
-            for (int channel = 0; channel < resultImage.NumberOfChannels; channel++)
+            for (int channel = 0; channel < sourceImage.NumberOfChannels; channel++)
             {
-                for (int x = 0; x < resultImage.Width; x++)
+                for (int x = 0; x < sourceImage.Width; x++)
                 {
-                    for (int y = 0; y < resultImage.Height; y++)
+                    for (int y = 0; y < sourceImage.Height; y++)
                     {
-                        byte color = resultImage.Data[y, x, channel];
-                        if (color <= 50)
-                            color = 0;
-                        else if (color <= 100)
-                            color = 25;
-                        else if (color <= 150)
-                            color = 180;
-                        else if (color <= 200)
-                            color = 210;
-                        else
-                            color = 255;
-                        resultImage.Data[y, x, channel] = color;
+                        sourceImage.Data[y, x, channel] = Editor.toFourColor(sourceImage.Data[y, x, channel]);
                     }
                 }
             }
-
-            sourceImage = resultImage;
-            return sourceImage;
+            return this.clone();
         }        
     }
 }

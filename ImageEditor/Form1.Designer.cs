@@ -37,13 +37,18 @@
             this.cannyThreshold = new System.Windows.Forms.TrackBar();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
             this.button1 = new System.Windows.Forms.Button();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.videoContainer = new Emgu.CV.UI.ImageBox();
+            this.start = new System.Windows.Forms.Button();
+            this.stop = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.imageDefault)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cannyThresholdLinking)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cannyThreshold)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.videoContainer)).BeginInit();
             this.SuspendLayout();
             // 
             // download
@@ -127,16 +132,6 @@
             this.tabPage1.Text = "Canny and Cell";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // tabPage2
-            // 
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(631, 512);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "tabPage2";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(582, 440);
@@ -146,6 +141,47 @@
             this.button1.Text = "reset";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.stop);
+            this.tabPage2.Controls.Add(this.start);
+            this.tabPage2.Controls.Add(this.videoContainer);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(631, 512);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "TWITCH";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // videoContainer
+            // 
+            this.videoContainer.Location = new System.Drawing.Point(0, 0);
+            this.videoContainer.Name = "videoContainer";
+            this.videoContainer.Size = new System.Drawing.Size(628, 439);
+            this.videoContainer.TabIndex = 2;
+            this.videoContainer.TabStop = false;
+            // 
+            // start
+            // 
+            this.start.Location = new System.Drawing.Point(227, 465);
+            this.start.Name = "start";
+            this.start.Size = new System.Drawing.Size(75, 23);
+            this.start.TabIndex = 3;
+            this.start.Text = "START";
+            this.start.UseVisualStyleBackColor = true;
+            this.start.Click += new System.EventHandler(this.startVideo);
+            // 
+            // stop
+            // 
+            this.stop.Location = new System.Drawing.Point(333, 465);
+            this.stop.Name = "stop";
+            this.stop.Size = new System.Drawing.Size(75, 23);
+            this.stop.TabIndex = 4;
+            this.stop.Text = "STOP";
+            this.stop.UseVisualStyleBackColor = true;
+            this.stop.Click += new System.EventHandler(this.stopVideo);
             // 
             // Form1
             // 
@@ -161,6 +197,8 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.videoContainer)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -176,6 +214,9 @@
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.Button button1;
+        private Emgu.CV.UI.ImageBox videoContainer;
+        private System.Windows.Forms.Button stop;
+        private System.Windows.Forms.Button start;
     }
 }
 

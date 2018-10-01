@@ -18,26 +18,41 @@ namespace ImageEditor
     {
 
         private Editor editor = new Editor();
+        private VideoStream stream;
 
         public Form1()
         {
             InitializeComponent();
+            this.stream = new VideoStream(this.onChange);
+        }
+
+        public bool onChange(Mat frame)
+        {
+            videoContainer.Image = frame;
+            return true;
         }
 
         private void loadImage(object sender, EventArgs e)
         {
-            editor.readImage();
-            imageDefault.Image = editor.imageResize(640, 480);
+            
+            imageDefault.Image = editor
+                .readImage()
+                .imageResize(640, 480)
+                .getImage();
         }
 
         private void toCanny(object sender, EventArgs e)
         {
-            imageDefault.Image = editor.cannyEffect(cannyThreshold.Value, cannyThresholdLinking.Value);
+            imageDefault.Image = editor
+                .cannyEffect(cannyThreshold.Value, cannyThresholdLinking.Value)
+                .getImage();
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            imageDefault.Image = editor.cellShading();
+            imageDefault.Image = editor
+                .cellShading()
+                .getImage();
         }
 
         private void imageCell_Click(object sender, EventArgs e)
@@ -47,7 +62,19 @@ namespace ImageEditor
 
         private void button1_Click(object sender, EventArgs e)
         {
-            imageDefault.Image = editor.resetImage();
+            imageDefault.Image = editor
+                .resetImage()
+                .getImage();
+        }
+
+        private void stopVideo(object sender, EventArgs e)
+        {
+            this.stream.stopStream();
+        }
+
+        private void startVideo(object sender, EventArgs e)
+        {
+            this.stream.startStream();
         }
     }
 }

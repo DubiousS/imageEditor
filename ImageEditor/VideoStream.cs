@@ -15,28 +15,31 @@ namespace ImageEditor
     {
 
         private VideoCapture capture;
+        private Func<Mat, bool> onChange;
 
-        public VideoStream()
+        public VideoStream(Func<Mat, bool> onChange)
         {
-            capture.ImageGrabbed += this.processFrame;   
+            this.capture = new VideoCapture();
+            this.onChange = onChange;
         }
 
         private void processFrame(object sender, EventArgs e)
         {
             var frame = new Mat();
             this.capture.Retrieve(frame);
+            this.onChange(frame);
         }
 
-        private void startStream()
+        public void startStream()
         {
+            capture.ImageGrabbed += this.processFrame;
             capture.Start(null);
         }
 
-        private void stopStream(object sender, EventArgs e)
+        public void stopStream()
         {
+            capture.ImageGrabbed -= this.processFrame;
             capture.Stop();
         }
-
-
     }
 }
