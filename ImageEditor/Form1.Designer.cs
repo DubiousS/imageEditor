@@ -39,9 +39,14 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.button1 = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.videoContainer = new Emgu.CV.UI.ImageBox();
-            this.start = new System.Windows.Forms.Button();
             this.stop = new System.Windows.Forms.Button();
+            this.start = new System.Windows.Forms.Button();
+            this.videoContainer = new Emgu.CV.UI.ImageBox();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.defaultImageChannel = new Emgu.CV.UI.ImageBox();
+            this.editedImage = new Emgu.CV.UI.ImageBox();
+            this.channelList = new System.Windows.Forms.ListBox();
+            this.downloadChannelImage = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.imageDefault)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cannyThresholdLinking)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cannyThreshold)).BeginInit();
@@ -49,6 +54,9 @@
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.videoContainer)).BeginInit();
+            this.tabPage3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.defaultImageChannel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.editedImage)).BeginInit();
             this.SuspendLayout();
             // 
             // download
@@ -111,6 +119,7 @@
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Location = new System.Drawing.Point(-2, -4);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -157,14 +166,15 @@
             this.tabPage2.Text = "TWITCH";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // videoContainer
+            // stop
             // 
-            this.videoContainer.FunctionalMode = Emgu.CV.UI.ImageBox.FunctionalModeOption.Minimum;
-            this.videoContainer.Location = new System.Drawing.Point(0, 0);
-            this.videoContainer.Name = "videoContainer";
-            this.videoContainer.Size = new System.Drawing.Size(628, 439);
-            this.videoContainer.TabIndex = 2;
-            this.videoContainer.TabStop = false;
+            this.stop.Location = new System.Drawing.Point(333, 465);
+            this.stop.Name = "stop";
+            this.stop.Size = new System.Drawing.Size(75, 23);
+            this.stop.TabIndex = 4;
+            this.stop.Text = "STOP";
+            this.stop.UseVisualStyleBackColor = true;
+            this.stop.Click += new System.EventHandler(this.stopVideo);
             // 
             // start
             // 
@@ -176,15 +186,69 @@
             this.start.UseVisualStyleBackColor = true;
             this.start.Click += new System.EventHandler(this.startVideo);
             // 
-            // stop
+            // videoContainer
             // 
-            this.stop.Location = new System.Drawing.Point(333, 465);
-            this.stop.Name = "stop";
-            this.stop.Size = new System.Drawing.Size(75, 23);
-            this.stop.TabIndex = 4;
-            this.stop.Text = "STOP";
-            this.stop.UseVisualStyleBackColor = true;
-            this.stop.Click += new System.EventHandler(this.stopVideo);
+            this.videoContainer.FunctionalMode = Emgu.CV.UI.ImageBox.FunctionalModeOption.Minimum;
+            this.videoContainer.Location = new System.Drawing.Point(0, 0);
+            this.videoContainer.Name = "videoContainer";
+            this.videoContainer.Size = new System.Drawing.Size(628, 439);
+            this.videoContainer.TabIndex = 2;
+            this.videoContainer.TabStop = false;
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.downloadChannelImage);
+            this.tabPage3.Controls.Add(this.channelList);
+            this.tabPage3.Controls.Add(this.editedImage);
+            this.tabPage3.Controls.Add(this.defaultImageChannel);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(631, 512);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "CHANNEL";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // defaultImageChannel
+            // 
+            this.defaultImageChannel.FunctionalMode = Emgu.CV.UI.ImageBox.FunctionalModeOption.Minimum;
+            this.defaultImageChannel.Location = new System.Drawing.Point(4, 4);
+            this.defaultImageChannel.Name = "defaultImageChannel";
+            this.defaultImageChannel.Size = new System.Drawing.Size(300, 250);
+            this.defaultImageChannel.TabIndex = 2;
+            this.defaultImageChannel.TabStop = false;
+            // 
+            // editedImage
+            // 
+            this.editedImage.FunctionalMode = Emgu.CV.UI.ImageBox.FunctionalModeOption.Minimum;
+            this.editedImage.Location = new System.Drawing.Point(325, 4);
+            this.editedImage.Name = "editedImage";
+            this.editedImage.Size = new System.Drawing.Size(300, 249);
+            this.editedImage.TabIndex = 2;
+            this.editedImage.TabStop = false;
+            // 
+            // channelList
+            // 
+            this.channelList.FormattingEnabled = true;
+            this.channelList.Items.AddRange(new object[] {
+            "ALL",
+            "RED",
+            "GREEN",
+            "BLUE"});
+            this.channelList.Location = new System.Drawing.Point(94, 260);
+            this.channelList.Name = "channelList";
+            this.channelList.Size = new System.Drawing.Size(48, 56);
+            this.channelList.TabIndex = 4;
+            this.channelList.SelectedIndexChanged += new System.EventHandler(this.selectChannel);
+            // 
+            // downloadChannelImage
+            // 
+            this.downloadChannelImage.Location = new System.Drawing.Point(4, 260);
+            this.downloadChannelImage.Name = "downloadChannelImage";
+            this.downloadChannelImage.Size = new System.Drawing.Size(84, 56);
+            this.downloadChannelImage.TabIndex = 5;
+            this.downloadChannelImage.Text = "Download";
+            this.downloadChannelImage.UseVisualStyleBackColor = true;
+            this.downloadChannelImage.Click += new System.EventHandler(this.downloadImageForChannelEdtor);
             // 
             // Form1
             // 
@@ -202,6 +266,9 @@
             this.tabPage1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.videoContainer)).EndInit();
+            this.tabPage3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.defaultImageChannel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.editedImage)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -220,6 +287,11 @@
         private Emgu.CV.UI.ImageBox videoContainer;
         private System.Windows.Forms.Button stop;
         private System.Windows.Forms.Button start;
+        private System.Windows.Forms.TabPage tabPage3;
+        private Emgu.CV.UI.ImageBox editedImage;
+        private Emgu.CV.UI.ImageBox defaultImageChannel;
+        private System.Windows.Forms.ListBox channelList;
+        private System.Windows.Forms.Button downloadChannelImage;
     }
 }
 

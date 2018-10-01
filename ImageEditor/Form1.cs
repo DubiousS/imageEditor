@@ -34,7 +34,7 @@ namespace ImageEditor
             
             imageDefault.Image = editor
                 .readImage()
-                .imageResize(640, 480)
+                .imageResize(imageDefault.Width, imageDefault.Height)
                 .getImage();
         }
 
@@ -50,7 +50,7 @@ namespace ImageEditor
             imageDefault.Image = editor
                 .cannyEffect(cannyThreshold.Value, cannyThresholdLinking.Value)
                 .cellShading()
-                .imageResize(640, 480)
+                .imageResize(imageDefault.Width, imageDefault.Height)
                 .getImage();
         }
 
@@ -58,18 +58,45 @@ namespace ImageEditor
         {
             imageDefault.Image = editor
                 .resetImage()
-                .imageResize(640, 480)
+                .imageResize(imageDefault.Width, imageDefault.Height)
                 .getImage();
         }
 
         private void stopVideo(object sender, EventArgs e)
         {
-            this.stream.stopStream();
+            stream.stopStream();
         }
 
         private void startVideo(object sender, EventArgs e)
         {
-            this.stream.startStream();
+            stream.startStream();
+        }
+
+        private void downloadImageForChannelEdtor(object sender, EventArgs e)
+        {
+            defaultImageChannel.Image = editor
+                .readImage()
+                .imageResize(editedImage.Width, editedImage.Height)
+                .getImage();
+        }
+
+        private void selectChannel(object sender, EventArgs e)
+        {
+            int index = channelList.SelectedIndex;
+            if (index != 0)
+            {
+                editedImage.Image = editor
+                    .resetImage()
+                    .imageResize(editedImage.Width, editedImage.Height)
+                    .getOneChannel((byte)(index - 1))
+                    .getImage();
+            } else
+            {
+                editedImage.Image = editor
+                   .resetImage()
+                   .imageResize(editedImage.Width, editedImage.Height)
+                   .getImage();
+            }
         }
     }
 }
