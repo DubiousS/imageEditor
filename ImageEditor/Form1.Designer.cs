@@ -79,13 +79,15 @@
             this.button3.TabIndex = 5;
             this.button3.Text = "Cell Shading";
             this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.button3.Click += new System.EventHandler(this.cellShading);
             // 
             // imageDefault
             // 
+            this.imageDefault.FunctionalMode = Emgu.CV.UI.ImageBox.FunctionalModeOption.Minimum;
             this.imageDefault.Location = new System.Drawing.Point(10, 6);
             this.imageDefault.Name = "imageDefault";
             this.imageDefault.Size = new System.Drawing.Size(615, 428);
+            this.imageDefault.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.imageDefault.TabIndex = 2;
             this.imageDefault.TabStop = false;
             // 
@@ -140,7 +142,7 @@
             this.button1.TabIndex = 8;
             this.button1.Text = "reset";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.Click += new System.EventHandler(this.resetImage);
             // 
             // tabPage2
             // 
@@ -157,6 +159,7 @@
             // 
             // videoContainer
             // 
+            this.videoContainer.FunctionalMode = Emgu.CV.UI.ImageBox.FunctionalModeOption.Minimum;
             this.videoContainer.Location = new System.Drawing.Point(0, 0);
             this.videoContainer.Name = "videoContainer";
             this.videoContainer.Size = new System.Drawing.Size(628, 439);

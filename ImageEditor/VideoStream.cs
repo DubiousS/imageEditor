@@ -14,10 +14,12 @@ namespace ImageEditor
     class VideoStream
     {
 
-        private VideoCapture capture;
-        private Func<Mat, bool> onChange;
+        public delegate void Function<T1>(T1 frame);
 
-        public VideoStream(Func<Mat, bool> onChange)
+        private VideoCapture capture;
+        private Function<Mat> onChange;
+
+        public VideoStream(Function<Mat> onChange)
         {
             this.capture = new VideoCapture();
             this.onChange = onChange;

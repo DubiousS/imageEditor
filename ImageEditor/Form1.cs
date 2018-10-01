@@ -16,6 +16,7 @@ namespace ImageEditor
 {
     public partial class Form1 : Form
     {
+        public delegate void Function<T1>(T1 frame);
 
         private Editor editor = new Editor();
         private VideoStream stream;
@@ -23,13 +24,9 @@ namespace ImageEditor
         public Form1()
         {
             InitializeComponent();
-            this.stream = new VideoStream(this.onChange);
-        }
-
-        public bool onChange(Mat frame)
-        {
-            videoContainer.Image = frame;
-            return true;
+            this.stream = new VideoStream((frame) => {
+                videoContainer.Image = frame;
+            });
         }
 
         private void loadImage(object sender, EventArgs e)
@@ -48,22 +45,20 @@ namespace ImageEditor
                 .getImage();
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void cellShading(object sender, EventArgs e)
         {
             imageDefault.Image = editor
+                .cannyEffect(cannyThreshold.Value, cannyThresholdLinking.Value)
                 .cellShading()
+                .imageResize(640, 480)
                 .getImage();
         }
 
-        private void imageCell_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button1_Click(object sender, EventArgs e)
+        private void resetImage(object sender, EventArgs e)
         {
             imageDefault.Image = editor
                 .resetImage()
+                .imageResize(640, 480)
                 .getImage();
         }
 

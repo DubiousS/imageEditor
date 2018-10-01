@@ -15,13 +15,16 @@ namespace ImageEditor
     {
         private Image<Bgr, byte> sourceImage;
         private Image<Bgr, byte> defaulImage;
+        public delegate void Function<T1, T2, T3, T4>(T1 channel, T2 width, T3 height, T4 color);
+
+        static String FILE_DESCRIPTION = "Файлы изображений (*.jpg, *.jpeg, *.jpe, *.jfif, *.png) | *.jpg; *.jpeg; *.jpe; *.jfif; *.png";
 
         public Editor() {}
 
         public Editor readImage()
         {
             var openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Файлы изображений (*.jpg, *.jpeg, *.jpe, *.jfif, *.png) | *.jpg; *.jpeg; *.jpe; *.jfif; *.png";
+            openFileDialog.Filter = FILE_DESCRIPTION;
             var result = openFileDialog.ShowDialog();
             try {
                 if (result == DialogResult.OK)
@@ -94,20 +97,27 @@ namespace ImageEditor
             return this.clone();
         }
 
-        public Editor cellShading()
+        public void forEach(Function<int, int, int, byte> callback)
         {
-            Image<Bgr, byte> sourceImage = this.sourceImage.Sub(this.cannyEffect(80, 40).getImage());
-
             for (int channel = 0; channel < sourceImage.NumberOfChannels; channel++)
             {
                 for (int x = 0; x < sourceImage.Width; x++)
                 {
                     for (int y = 0; y < sourceImage.Height; y++)
                     {
-                        sourceImage.Data[y, x, channel] = Editor.toFourColor(sourceImage.Data[y, x, channel]);
+                        callback(channel, y, x, sourceImage.Data[y, x, channel]);
                     }
                 }
             }
+        }
+
+        public Editor cellShading()
+        {
+            Image<Bgr, byte> sourceImage = this.defaulImage.Sub(this.sourceImage);
+
+            this.forEach((channel, width, height, color) => {
+                sourceImage.Data[width, height, channel] = Editor.toFourColor(color);
+            });
             return this.clone();
         }        
     }
