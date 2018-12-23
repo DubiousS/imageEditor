@@ -78,6 +78,30 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Forms\ScalingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ScalingForm.Designer.cs">
+      <DependentUpon>ScalingForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ShearingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ShearingForm.Designer.cs">
+      <DependentUpon>ShearingForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ReflectForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ReflectForm.Designer.cs">
+      <DependentUpon>ReflectForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RotateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RotateForm.Designer.cs">
+      <DependentUpon>RotateForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="VideoStream.cs" />
     <Compile Include="Forms\WindowFilterForm.cs">
       <SubType>Form</SubType>
@@ -94,6 +118,9 @@
     <EmbeddedResource Include="Forms\ChannelsForm.resx">
       <DependentUpon>ChannelsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ScalingForm.resx">
+      <DependentUpon>ScalingForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\WindowFilterForm.resx">
       <DependentUpon>WindowFilterForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -106,6 +133,15 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Forms\ShearingForm.resx">
+      <DependentUpon>ShearingForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReflectForm.resx">
+      <DependentUpon>ReflectForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RotateForm.resx">
+      <DependentUpon>RotateForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

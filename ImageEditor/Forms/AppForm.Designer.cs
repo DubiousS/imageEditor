@@ -39,12 +39,18 @@
             this.blackAndWhiteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sharpenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sepiaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cellToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cartoonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.windowFilterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.channelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.affinsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.scalingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sharingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rotateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reflectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ApplyChangesButton = new System.Windows.Forms.Button();
-            this.cellToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.homographyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.defaultImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sourceImage)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -52,21 +58,17 @@
             // 
             // defaultImage
             // 
-            this.defaultImage.FunctionalMode = Emgu.CV.UI.ImageBox.FunctionalModeOption.Minimum;
             this.defaultImage.Location = new System.Drawing.Point(12, 51);
             this.defaultImage.Name = "defaultImage";
             this.defaultImage.Size = new System.Drawing.Size(324, 397);
-            this.defaultImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.defaultImage.TabIndex = 14;
             this.defaultImage.TabStop = false;
             // 
             // sourceImage
             // 
-            this.sourceImage.FunctionalMode = Emgu.CV.UI.ImageBox.FunctionalModeOption.Minimum;
             this.sourceImage.Location = new System.Drawing.Point(381, 51);
             this.sourceImage.Name = "sourceImage";
             this.sourceImage.Size = new System.Drawing.Size(324, 397);
-            this.sourceImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.sourceImage.TabIndex = 15;
             this.sourceImage.TabStop = false;
             // 
@@ -101,7 +103,8 @@
             this.asdaToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.filtersToolStripMenuItem,
             this.channelsToolStripMenuItem,
-            this.resetToolStripMenuItem});
+            this.resetToolStripMenuItem,
+            this.affinsToolStripMenuItem});
             this.asdaToolStripMenuItem.Name = "asdaToolStripMenuItem";
             this.asdaToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
             this.asdaToolStripMenuItem.Text = "IMAGE";
@@ -122,35 +125,42 @@
             // blackAndWhiteToolStripMenuItem
             // 
             this.blackAndWhiteToolStripMenuItem.Name = "blackAndWhiteToolStripMenuItem";
-            this.blackAndWhiteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.blackAndWhiteToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.blackAndWhiteToolStripMenuItem.Text = "grayscale";
             this.blackAndWhiteToolStripMenuItem.Click += new System.EventHandler(this.ToGrayScale);
             // 
             // sharpenToolStripMenuItem
             // 
             this.sharpenToolStripMenuItem.Name = "sharpenToolStripMenuItem";
-            this.sharpenToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.sharpenToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.sharpenToolStripMenuItem.Text = "blur";
             this.sharpenToolStripMenuItem.Click += new System.EventHandler(this.BlurImage);
             // 
             // sepiaToolStripMenuItem
             // 
             this.sepiaToolStripMenuItem.Name = "sepiaToolStripMenuItem";
-            this.sepiaToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.sepiaToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.sepiaToolStripMenuItem.Text = "sepia";
             this.sepiaToolStripMenuItem.Click += new System.EventHandler(this.SepiaImage);
+            // 
+            // cellToolStripMenuItem
+            // 
+            this.cellToolStripMenuItem.Name = "cellToolStripMenuItem";
+            this.cellToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.cellToolStripMenuItem.Text = "cell shading";
+            this.cellToolStripMenuItem.Click += new System.EventHandler(this.OpenCellShadingFilterModal);
             // 
             // cartoonToolStripMenuItem
             // 
             this.cartoonToolStripMenuItem.Name = "cartoonToolStripMenuItem";
-            this.cartoonToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.cartoonToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.cartoonToolStripMenuItem.Text = "cartoon";
             this.cartoonToolStripMenuItem.Click += new System.EventHandler(this.ToCartoon);
             // 
             // windowFilterToolStripMenuItem
             // 
             this.windowFilterToolStripMenuItem.Name = "windowFilterToolStripMenuItem";
-            this.windowFilterToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.windowFilterToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.windowFilterToolStripMenuItem.Text = "window filter";
             this.windowFilterToolStripMenuItem.Click += new System.EventHandler(this.OpenWindowFilterModal);
             // 
@@ -168,6 +178,46 @@
             this.resetToolStripMenuItem.Text = "reset";
             this.resetToolStripMenuItem.Click += new System.EventHandler(this.ResetImage);
             // 
+            // affinsToolStripMenuItem
+            // 
+            this.affinsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.scalingToolStripMenuItem,
+            this.sharingToolStripMenuItem,
+            this.rotateToolStripMenuItem,
+            this.reflectToolStripMenuItem,
+            this.homographyToolStripMenuItem});
+            this.affinsToolStripMenuItem.Name = "affinsToolStripMenuItem";
+            this.affinsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.affinsToolStripMenuItem.Text = "affins";
+            // 
+            // scalingToolStripMenuItem
+            // 
+            this.scalingToolStripMenuItem.Name = "scalingToolStripMenuItem";
+            this.scalingToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.scalingToolStripMenuItem.Text = "scaling";
+            this.scalingToolStripMenuItem.Click += new System.EventHandler(this.OpenScalingModal);
+            // 
+            // sharingToolStripMenuItem
+            // 
+            this.sharingToolStripMenuItem.Name = "sharingToolStripMenuItem";
+            this.sharingToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.sharingToolStripMenuItem.Text = "sharing";
+            this.sharingToolStripMenuItem.Click += new System.EventHandler(this.OpenSharingModal);
+            // 
+            // rotateToolStripMenuItem
+            // 
+            this.rotateToolStripMenuItem.Name = "rotateToolStripMenuItem";
+            this.rotateToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.rotateToolStripMenuItem.Text = "rotate";
+            this.rotateToolStripMenuItem.Click += new System.EventHandler(this.OpenRotateModal);
+            // 
+            // reflectToolStripMenuItem
+            // 
+            this.reflectToolStripMenuItem.Name = "reflectToolStripMenuItem";
+            this.reflectToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.reflectToolStripMenuItem.Text = "reflect";
+            this.reflectToolStripMenuItem.Click += new System.EventHandler(this.OpenReflectModal);
+            // 
             // ApplyChangesButton
             // 
             this.ApplyChangesButton.Location = new System.Drawing.Point(630, 454);
@@ -178,12 +228,12 @@
             this.ApplyChangesButton.UseVisualStyleBackColor = true;
             this.ApplyChangesButton.Click += new System.EventHandler(this.ApplyChanges);
             // 
-            // cellToolStripMenuItem
+            // homographyToolStripMenuItem
             // 
-            this.cellToolStripMenuItem.Name = "cellToolStripMenuItem";
-            this.cellToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.cellToolStripMenuItem.Text = "cell shading";
-            this.cellToolStripMenuItem.Click += new System.EventHandler(this.OpenCellShadingFilterModal);
+            this.homographyToolStripMenuItem.Name = "homographyToolStripMenuItem";
+            this.homographyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.homographyToolStripMenuItem.Text = "homography";
+            this.homographyToolStripMenuItem.Click += new System.EventHandler(this.StartHomography);
             // 
             // AppForm
             // 
@@ -223,6 +273,12 @@
         private System.Windows.Forms.Button ApplyChangesButton;
         private System.Windows.Forms.ToolStripMenuItem windowFilterToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cellToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem affinsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem scalingToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sharingToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem rotateToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem reflectToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem homographyToolStripMenuItem;
     }
 }
 

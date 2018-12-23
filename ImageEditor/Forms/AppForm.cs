@@ -1,6 +1,7 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace ImageEditor
@@ -10,7 +11,8 @@ namespace ImageEditor
         public delegate void Function<T1>(T1 frame);
 
         private Editor Editor = new Editor();
-        private VideoStream stream;
+
+        PointF[] srcPoints = new PointF[4];        int pointsIndex = 0;
 
         public AppForm()
         {
@@ -18,19 +20,27 @@ namespace ImageEditor
             Editor.SubscribeToChange(SetImage);
         }
 
+        private void MouseHandler(object sender, MouseEventArgs e)
+        {
+            int x = (int)(e.Location.X / sourceImage.ZoomScale);
+            int y = (int)(e.Location.Y / sourceImage.ZoomScale);
+
+            Editor.DrawCircly(x, y);
+
+            srcPoints.SetValue(new PointF(x, y), pointsIndex);
+            pointsIndex++;
+
+            if (pointsIndex == 4)
+            {
+                pointsIndex = 0;
+                sourceImage.MouseClick -= MouseHandler;
+                Editor.CropToHomography(srcPoints);
+            }
+        }
+
         public void SetImage(Image<Bgr, byte> image)
         {
             sourceImage.Image = image;
-        }
-
-        private void StopVideo(object sender, EventArgs e)
-        {
-            stream.stopStream();
-        }
-
-        private void StartVideo(object sender, EventArgs e)
-        {
-            stream.startStream();
         }
 
         private void LoadImage(object sender, EventArgs e)
@@ -104,6 +114,39 @@ namespace ImageEditor
             CellShadingForm cellShadingForm = new CellShadingForm(Editor);
 
             cellShadingForm.ShowDialog();
+        }
+
+        private void OpenScalingModal(object sender, EventArgs e)
+        {
+            ScalingForm scalingForm = new ScalingForm(Editor);
+
+            scalingForm.Show();
+        }
+
+        private void OpenSharingModal(object sender, EventArgs e)
+        {
+            ShearingForm sharingForm = new ShearingForm(Editor);
+
+            sharingForm.Show();
+        }
+
+        private void OpenRotateModal(object sender, EventArgs e)
+        {
+            RotateForm rotateForm = new RotateForm(Editor);
+
+            rotateForm.Show();
+        }
+
+        private void OpenReflectModal(object sender, EventArgs e)
+        {
+            ReflectForm reflectForm = new ReflectForm(Editor);
+
+            reflectForm.Show();
+        }
+
+        private void StartHomography(object sender, EventArgs e)
+        {
+            sourceImage.MouseClick += new MouseEventHandler(MouseHandler);
         }
     }
 }

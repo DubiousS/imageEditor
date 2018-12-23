@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ namespace ImageEditor
 {
     public class Editor
     {
-        private Image<Bgr, byte> DefaultImage = new Image<Bgr, byte>(640, 480);
+        public Image<Bgr, byte> DefaultImage = new Image<Bgr, byte>(640, 480);
         private Image<Bgr, byte> ResultImage = new Image<Bgr, byte>(640, 480);
         private Image<Bgr, byte> _sourceImage = new Image<Bgr, byte>(640, 480);
         private onChangeImage<Image<Bgr, byte>> OnChangeImage = (SourceImage) => { };
@@ -64,7 +65,7 @@ namespace ImageEditor
 
         private static double SmoothColor(int color, double newColor, double strength)
         {
-            return (double)(color + (newColor - color) * strength);
+            return color + (newColor - color) * strength;
         }
 
         private static byte AdditionColor(byte color, byte addingColor)
@@ -90,9 +91,21 @@ namespace ImageEditor
 
         public Editor() { }
 
-        public Editor(int width, int height) {
+        public Editor(int width, int height)
+        {
             SourceImage = new Image<Bgr, byte>(width, height);
             DefaultImage = new Image<Bgr, byte>(width, height);
+        }
+
+        public void DrawCircly(int x, int y)
+        {
+            Point center = new Point(x, y);
+            int radius = 2;
+            int thickness = 2;
+            var color = new Bgr(Color.Blue).MCvScalar;
+
+            CvInvoke.Circle(SourceImage, center, radius, color, thickness);
+            OnChangeImage(SourceImage);
         }
 
         public void ForEach(forEachDelegate<int, int, byte> callback, int channel = 0)
@@ -120,14 +133,29 @@ namespace ImageEditor
             }
         }
 
+        public void ForEach(forEachDelegateWithChannel<int, int, int, byte> callback, Image<Bgr, byte> img)
+        {
+            for (int channel = 0; channel < img.NumberOfChannels; channel++)
+            {
+                for (int width = 0; width < img.Width; width++)
+                {
+                    for (int height = 0; height < img.Height; height++)
+                    {
+                        callback(channel, height, width, img.Data[height, width, channel]);
+                    }
+                }
+            }
+        }
+
         public Editor Map(mapDelegate<int, int, byte> callback, int channel = 0)
         {
             Image<Bgr, byte> resultImage = new Image<Bgr, byte>(GetImageWidth(), GetImageHeight());
 
-            this.ForEach((height, width, color) => {
+            ForEach((height, width, color) =>
+            {
                 resultImage.Data[height, width, channel] = callback(height, width, color);
             });
-            this.SourceImage = resultImage;
+            SourceImage = resultImage;
 
             return this;
         }
@@ -136,7 +164,8 @@ namespace ImageEditor
         {
             Image<Bgr, byte> resultImage = new Image<Bgr, byte>(GetImageWidth(), GetImageHeight());
 
-            ForEach((channel, height, width, color) => {
+            ForEach((channel, height, width, color) =>
+            {
                 resultImage.Data[height, width, channel] = callback(channel, height, width, color);
             });
             SourceImage = resultImage;
@@ -151,7 +180,8 @@ namespace ImageEditor
 
             DialogResult result = openFileDialog.ShowDialog();
 
-            try {
+            try
+            {
                 if (result == DialogResult.OK)
                 {
                     string fileName = openFileDialog.FileName;
@@ -160,7 +190,8 @@ namespace ImageEditor
                     DefaultImage = SourceImage.Clone();
                     ResultImage = SourceImage.Clone();
                 }
-            } catch (Exception error) { }
+            }
+            catch (Exception error) { }
 
             return this;
         }
@@ -170,7 +201,8 @@ namespace ImageEditor
             OnChangeImage = callback;
         }
 
-        public Editor Clone() {
+        public Editor Clone()
+        {
             return new Editor
             {
                 SourceImage = SourceImage.Clone(),
@@ -189,10 +221,10 @@ namespace ImageEditor
             y = y < 0 ? 0 : y;
             x = x < 0 ? 0 : x;
             width = x + width < SourceImage.Width
-                ? x + width 
+                ? x + width
                 : SourceImage.Width - 1;
             height = y + height < SourceImage.Height
-                ? y + height 
+                ? y + height
                 : SourceImage.Height - 1;
             List<byte> colors = new List<byte>();
 
@@ -222,11 +254,13 @@ namespace ImageEditor
             bool isUnCorrect = x > SourceImage.Width || y > SourceImage.Height ||
                                newWidth > SourceImage.Width || newHeight > SourceImage.Height;
 
-            if (isUnCorrect) {
+            if (isUnCorrect)
+            {
                 return new Editor(newWidth, newHeight);
             }
 
-            if (x < 0) {
+            if (x < 0)
+            {
                 newWidth = newWidth + x;
                 x = 0;
             }
@@ -236,7 +270,8 @@ namespace ImageEditor
                 newWidth = SourceImage.Width - x;
             }
 
-            if (y < 0) {
+            if (y < 0)
+            {
                 newHeight = newHeight + y;
                 y = 0;
             }
@@ -282,7 +317,8 @@ namespace ImageEditor
         {
             int colorSumm = 0;
 
-            ForEach((height, width, color) => {
+            ForEach((height, width, color) =>
+            {
                 colorSumm += color;
             }, channel);
 
@@ -345,7 +381,8 @@ namespace ImageEditor
         {
             Image<Gray, byte> grayImage = new Image<Gray, byte>(GetImageWidth(), GetImageHeight());
 
-            ForEach((height, width, color) => {
+            ForEach((height, width, color) =>
+            {
                 grayImage.Data[height, width, BLUE_CHANNEL] = Convert.ToByte(
                     0.299 * GetColor(height, width, RED_CHANNEL) +
                     0.587 * GetColor(height, width, GREEN_CHANNEL) +
@@ -361,6 +398,7 @@ namespace ImageEditor
         {
             return Map((channel, height, width, color) => Convert.ToByte(color + brightness));
         }
+
 
         public Editor ChangeContrast(byte contrast)
         {
@@ -379,7 +417,8 @@ namespace ImageEditor
         {
             Image<Bgr, byte> resultImage = new Image<Bgr, byte>(GetImageWidth(), GetImageHeight());
 
-            ForEach((channel, height, width, color) => {
+            ForEach((channel, height, width, color) =>
+            {
                 int blue = GetColor(height, width, BLUE_CHANNEL),
                     green = GetColor(height, width, GREEN_CHANNEL),
                     red = GetColor(height, width, RED_CHANNEL);
@@ -402,7 +441,8 @@ namespace ImageEditor
         {
             Image<Bgr, byte> resultImage = new Image<Bgr, byte>(GetImageWidth(), GetImageHeight());
 
-            ForEach((channel, height, width, color) => {
+            ForEach((channel, height, width, color) =>
+            {
                 List<byte> colors = GetColors(width - 1, height - 1, 3, 3, channel);
                 colors.Sort();
 
@@ -420,7 +460,8 @@ namespace ImageEditor
 
         public Editor Blur(double blurStrength = 1.0)
         {
-            return WindowFilters((colors, color) => (byte)(colors.Sum(item => {
+            return WindowFilters((colors, color) => (byte)(colors.Sum(item =>
+            {
                 double newColor = Convert.ToInt32(item);
 
                 return SmoothColor(color, newColor, blurStrength);
@@ -429,10 +470,12 @@ namespace ImageEditor
 
         public Editor Matrixfilter(List<int> matrix, double strength = 1.0)
         {
-            int index = 0; 
-            return WindowFilters((colors, color) => {
+            int index = 0;
+            return WindowFilters((colors, color) =>
+            {
 
-                double newColor = colors.Sum(item => {
+                double newColor = colors.Sum(item =>
+                {
                     index++;
                     return item * matrix[index - 1];
                 });
@@ -441,6 +484,238 @@ namespace ImageEditor
 
                 return NormalizeColor(SmoothColor(color, newColor, strength));
             });
+        }
+
+        public Editor Scaling(double scalingWidth = 1.0, double scalingHeight = 1.0)
+        {
+
+            Image<Bgr, byte> resultImage = new Image<Bgr, byte>(
+                (int)Math.Abs(GetImageWidth() * scalingWidth) + 1,
+                (int)Math.Abs(GetImageHeight() * scalingHeight) + 1
+            );
+
+            ForEach((channel, height, width, color) =>
+            {
+                resultImage.Data[
+                    (int)(height * scalingHeight),
+                    (int)(width * scalingWidth),
+                    channel
+                ] = color;
+            });
+
+            SourceImage = BilinearInterp(resultImage, scalingWidth, scalingHeight);
+
+            return this;
+        }
+
+        public Editor ShearingAlignBottom(double shift = 1.0)
+        {
+            Image<Bgr, byte> resultImage = new Image<Bgr, byte>(
+                (int)(GetImageWidth() * (1.0 + shift)),
+                GetImageHeight()
+            );
+
+            int heightImage = GetImageHeight();
+
+            ForEach((channel, height, width, color) =>
+            {
+                resultImage.Data[
+                    height,
+                    (int)(width + shift * (heightImage - height)),
+                    channel
+                ] = color;
+            });
+
+            SourceImage = resultImage;
+
+            return this;
+        }
+
+        public Editor ShearingAlignTop(double shift = 1.0)
+        {
+            Image<Bgr, byte> resultImage = new Image<Bgr, byte>(
+                (int)(GetImageWidth() * (1.0 + shift)),
+                GetImageHeight()
+            );
+
+            int heightImage = GetImageHeight();
+
+            ForEach((channel, height, width, color) =>
+            {
+                resultImage.Data[
+                    height,
+                    (int)(width + shift * height),
+                    channel
+                ] = color;
+            });
+
+            SourceImage = resultImage;
+
+            return this;
+        }
+
+        public Editor ShearingAlignRight(double shift = 1.0)
+        {
+            Image<Bgr, byte> resultImage = new Image<Bgr, byte>(
+                GetImageWidth(),
+                (int)(GetImageHeight() * (1.0 + shift))
+            );
+
+            int WidthImage = GetImageWidth();
+
+            ForEach((channel, height, width, color) =>
+            {
+                resultImage.Data[
+                    (int)(height + shift * (WidthImage - width)),
+                    width,
+                    channel
+                ] = color;
+            });
+
+            SourceImage = resultImage;
+
+            return this;
+        }
+
+        public Editor ShearingAlignLeft(double shift = 1.0)
+        {
+            Image<Bgr, byte> resultImage = new Image<Bgr, byte>(
+                GetImageWidth(),
+                (int)(GetImageHeight() * (1.0 + shift))
+            );
+
+            int WidthImage = GetImageWidth();
+
+            ForEach((channel, height, width, color) =>
+            {
+                resultImage.Data[
+                    (int)(height + shift * width),
+                    width,
+                    channel
+                ] = color;
+            });
+
+            SourceImage = resultImage;
+
+            return this;
+        }
+
+        public Editor Rotate(double _angle = 90, int centerX = 150, int centerY = 150)
+        {
+            double angle = _angle * Math.PI / 180;
+
+            Image<Bgr, byte> resultImage = new Image<Bgr, byte>(SourceImage.Size);
+
+            ForEach((channel, height, width, color) =>
+            {
+                int newWidth = (int)(
+                    Math.Cos(angle) * (width- centerX) - 
+                    Math.Sin(angle) * (height - centerY) + centerX
+                );
+                int newHeight = (int)(
+                    Math.Sin(angle) * (width - centerX) +
+                    Math.Cos(angle) * (height - centerY) + centerY
+                );
+
+                if ((newWidth > 0 && newWidth < GetImageWidth()) && (newHeight > 0 && newHeight < GetImageHeight()))
+                {
+                    resultImage.Data[
+                        newHeight,
+                        newWidth,
+                        channel
+                    ] = color;
+                }
+            });
+
+            SourceImage = resultImage;
+
+            return this;
+        }
+
+        public Editor Reflect(int qX = 1, int qY = 1)
+        {
+            Image<Bgr, byte> resultImage = new Image<Bgr, byte>(
+                GetImageWidth(),
+                GetImageHeight()
+            );
+
+            ForEach((channel, height, width, color) =>
+            {
+                int newHeight = qY == -1 ? height * qY + GetImageHeight() - 1 : height;
+                int newWidth = qX == -1 ? width * qX + GetImageWidth() - 1 : width;
+
+                resultImage.Data[
+                    newHeight,
+                    newWidth,
+                    channel
+                ] = color;
+            });
+
+            SourceImage = resultImage;
+
+            return this;
+        }
+
+        private Image<Bgr, byte> BilinearInterp(Image<Bgr, byte> img, double scalingWidth, double scalingHeight)
+        {
+            Image<Bgr, byte> resultImage = new Image<Bgr, byte>(img.Size);
+            
+
+            ForEach((channel, height, width, color) =>
+            {
+                if (color == 0)
+                {
+                    byte floorX = (byte)(width / scalingWidth);
+                    double ratioX = width / scalingWidth - floorX;
+                    double inverseXratio = 1 - ratioX;
+
+                    byte floorY = (byte)(height / scalingHeight);
+                    double ratioY = height / scalingHeight - floorY;
+                    double inverseYratio = 1 - ratioY;
+
+                    if (floorX < SourceImage.Width - 1 && floorX >= 0 &&
+                       floorY < SourceImage.Height - 1 && floorY >= 0)
+                    {
+                        resultImage.Data[
+                            height,
+                            width,
+                            channel
+                        ] = (byte)(
+                            (GetColor(floorY, floorY, channel) * inverseXratio +
+                            GetColor(floorY, floorX + 1, channel) * ratioX) * inverseYratio + 
+                            (GetColor(floorY + 1, floorX, channel) * inverseXratio +
+                            GetColor(floorY + 1, floorX + 1, channel) * ratioX) * ratioY
+                        );
+                    }
+                } else
+                {
+                    resultImage.Data[
+                        height,
+                        width,
+                        channel
+                    ] = color;
+                }
+
+            }, img);
+
+            return resultImage;
+        }
+
+        public Editor CropToHomography(PointF[] points)
+        {
+            PointF[] destPoints = new PointF[]
+            {
+                 new PointF(0, 0),
+                 new PointF(0, GetImageHeight() - 1),
+                 new PointF(GetImageWidth() - 1, GetImageHeight() - 1),
+                 new PointF(GetImageWidth() - 1, 0)
+            };
+
+            var homographyMatrix = CvInvoke.GetPerspectiveTransform(points, destPoints);            Image<Bgr, byte> destImage = new Image<Bgr, byte>(SourceImage.Size);            CvInvoke.WarpPerspective(DefaultImage, destImage, homographyMatrix, destImage.Size);
+
+            SourceImage = destImage;
+
+            return this;
         }
     }
 }
