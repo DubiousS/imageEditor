@@ -148,5 +148,13 @@ namespace ImageEditor
         {
             sourceImage.MouseClick += new MouseEventHandler(MouseHandler);
         }
+
+        private void OpenSearchGeometryModal(object sender, EventArgs e)
+        {
+            SearchGeometryForm searchGeometry = new SearchGeometryForm(Editor);
+
+            searchGeometry.Show();
+
+        }
     }
 }

@@ -49,8 +49,9 @@
             this.sharingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rotateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reflectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ApplyChangesButton = new System.Windows.Forms.Button();
             this.homographyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ApplyChangesButton = new System.Windows.Forms.Button();
+            this.searchGeometryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.defaultImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sourceImage)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -104,7 +105,8 @@
             this.filtersToolStripMenuItem,
             this.channelsToolStripMenuItem,
             this.resetToolStripMenuItem,
-            this.affinsToolStripMenuItem});
+            this.affinsToolStripMenuItem,
+            this.searchGeometryToolStripMenuItem});
             this.asdaToolStripMenuItem.Name = "asdaToolStripMenuItem";
             this.asdaToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
             this.asdaToolStripMenuItem.Text = "IMAGE";
@@ -119,7 +121,7 @@
             this.cartoonToolStripMenuItem,
             this.windowFilterToolStripMenuItem});
             this.filtersToolStripMenuItem.Name = "filtersToolStripMenuItem";
-            this.filtersToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.filtersToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.filtersToolStripMenuItem.Text = "filters";
             // 
             // blackAndWhiteToolStripMenuItem
@@ -167,14 +169,14 @@
             // channelsToolStripMenuItem
             // 
             this.channelsToolStripMenuItem.Name = "channelsToolStripMenuItem";
-            this.channelsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.channelsToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.channelsToolStripMenuItem.Text = "channels";
             this.channelsToolStripMenuItem.Click += new System.EventHandler(this.OpenChannelModal);
             // 
             // resetToolStripMenuItem
             // 
             this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-            this.resetToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.resetToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.resetToolStripMenuItem.Text = "reset";
             this.resetToolStripMenuItem.Click += new System.EventHandler(this.ResetImage);
             // 
@@ -187,36 +189,43 @@
             this.reflectToolStripMenuItem,
             this.homographyToolStripMenuItem});
             this.affinsToolStripMenuItem.Name = "affinsToolStripMenuItem";
-            this.affinsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.affinsToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.affinsToolStripMenuItem.Text = "affins";
             // 
             // scalingToolStripMenuItem
             // 
             this.scalingToolStripMenuItem.Name = "scalingToolStripMenuItem";
-            this.scalingToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.scalingToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.scalingToolStripMenuItem.Text = "scaling";
             this.scalingToolStripMenuItem.Click += new System.EventHandler(this.OpenScalingModal);
             // 
             // sharingToolStripMenuItem
             // 
             this.sharingToolStripMenuItem.Name = "sharingToolStripMenuItem";
-            this.sharingToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.sharingToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.sharingToolStripMenuItem.Text = "sharing";
             this.sharingToolStripMenuItem.Click += new System.EventHandler(this.OpenSharingModal);
             // 
             // rotateToolStripMenuItem
             // 
             this.rotateToolStripMenuItem.Name = "rotateToolStripMenuItem";
-            this.rotateToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.rotateToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.rotateToolStripMenuItem.Text = "rotate";
             this.rotateToolStripMenuItem.Click += new System.EventHandler(this.OpenRotateModal);
             // 
             // reflectToolStripMenuItem
             // 
             this.reflectToolStripMenuItem.Name = "reflectToolStripMenuItem";
-            this.reflectToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.reflectToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.reflectToolStripMenuItem.Text = "reflect";
             this.reflectToolStripMenuItem.Click += new System.EventHandler(this.OpenReflectModal);
+            // 
+            // homographyToolStripMenuItem
+            // 
+            this.homographyToolStripMenuItem.Name = "homographyToolStripMenuItem";
+            this.homographyToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.homographyToolStripMenuItem.Text = "homography";
+            this.homographyToolStripMenuItem.Click += new System.EventHandler(this.StartHomography);
             // 
             // ApplyChangesButton
             // 
@@ -228,12 +237,12 @@
             this.ApplyChangesButton.UseVisualStyleBackColor = true;
             this.ApplyChangesButton.Click += new System.EventHandler(this.ApplyChanges);
             // 
-            // homographyToolStripMenuItem
+            // searchGeometryToolStripMenuItem
             // 
-            this.homographyToolStripMenuItem.Name = "homographyToolStripMenuItem";
-            this.homographyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.homographyToolStripMenuItem.Text = "homography";
-            this.homographyToolStripMenuItem.Click += new System.EventHandler(this.StartHomography);
+            this.searchGeometryToolStripMenuItem.Name = "searchGeometryToolStripMenuItem";
+            this.searchGeometryToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.searchGeometryToolStripMenuItem.Text = "search geometry";
+            this.searchGeometryToolStripMenuItem.Click += new System.EventHandler(this.OpenSearchGeometryModal);
             // 
             // AppForm
             // 
@@ -279,6 +288,7 @@
         private System.Windows.Forms.ToolStripMenuItem rotateToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reflectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem homographyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem searchGeometryToolStripMenuItem;
     }
 }
 

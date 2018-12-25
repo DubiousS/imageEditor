@@ -90,17 +90,23 @@
     <Compile Include="Forms\ShearingForm.Designer.cs">
       <DependentUpon>ShearingForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ReflectForm.cs">
+    <Compile Include="Forms\ReflectForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ReflectForm.Designer.cs">
+    <Compile Include="Forms\ReflectForm.Designer.cs">
       <DependentUpon>ReflectForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="RotateForm.cs">
+    <Compile Include="Forms\RotateForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="RotateForm.Designer.cs">
+    <Compile Include="Forms\RotateForm.Designer.cs">
       <DependentUpon>RotateForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\SearchGeometryForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SearchGeometryForm.Designer.cs">
+      <DependentUpon>SearchGeometryForm.cs</DependentUpon>
     </Compile>
     <Compile Include="VideoStream.cs" />
     <Compile Include="Forms\WindowFilterForm.cs">
@@ -121,6 +127,9 @@
     <EmbeddedResource Include="Forms\ScalingForm.resx">
       <DependentUpon>ScalingForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SearchGeometryForm.resx">
+      <DependentUpon>SearchGeometryForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\WindowFilterForm.resx">
       <DependentUpon>WindowFilterForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -136,10 +145,10 @@
     <EmbeddedResource Include="Forms\ShearingForm.resx">
       <DependentUpon>ShearingForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ReflectForm.resx">
+    <EmbeddedResource Include="Forms\ReflectForm.resx">
       <DependentUpon>ReflectForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="RotateForm.resx">
+    <EmbeddedResource Include="Forms\RotateForm.resx">
       <DependentUpon>RotateForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />

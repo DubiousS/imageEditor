@@ -17,6 +17,7 @@ namespace ImageEditor
         public Image<Bgr, byte> DefaultImage = new Image<Bgr, byte>(640, 480);
         private Image<Bgr, byte> ResultImage = new Image<Bgr, byte>(640, 480);
         private Image<Bgr, byte> _sourceImage = new Image<Bgr, byte>(640, 480);
+        private int prCount = 0;
         private onChangeImage<Image<Bgr, byte>> OnChangeImage = (SourceImage) => { };
 
         private Image<Bgr, byte> SourceImage
@@ -89,6 +90,128 @@ namespace ImageEditor
             return (byte)(Math.Min(Math.Max((int)(color), min), max));
         }
 
+        private Image<Bgr, byte> BilinearInterp(Image<Bgr, byte> img, double scalingWidth, double scalingHeight)
+        {
+            Image<Bgr, byte> resultImage = new Image<Bgr, byte>(img.Size);
+
+
+            ForEach((channel, height, width, color) =>
+            {
+                if (color == 0)
+                {
+                    byte floorX = (byte)(width / scalingWidth);
+                    double ratioX = width / scalingWidth - floorX;
+                    double inverseXratio = 1 - ratioX;
+
+                    byte floorY = (byte)(height / scalingHeight);
+                    double ratioY = height / scalingHeight - floorY;
+                    double inverseYratio = 1 - ratioY;
+
+                    if (floorX < SourceImage.Width - 1 && floorX >= 0 &&
+                       floorY < SourceImage.Height - 1 && floorY >= 0)
+                    {
+                        resultImage.Data[
+                            height,
+                            width,
+                            channel
+                        ] = (byte)(
+                            (GetColor(floorY, floorY, channel) * inverseXratio +
+                            GetColor(floorY, floorX + 1, channel) * ratioX) * inverseYratio +
+                            (GetColor(floorY + 1, floorX, channel) * inverseXratio +
+                            GetColor(floorY + 1, floorX + 1, channel) * ratioX) * ratioY
+                        );
+                    }
+                }
+                else
+                {
+                    resultImage.Data[
+                        height,
+                        width,
+                        channel
+                    ] = color;
+                }
+
+            }, img);
+
+            return resultImage;
+        }
+
+        private Image<Bgr, byte> CannyEffect(double cannyThreshold = 80.0, double cannyThresholdLinking = 40.0)
+        {
+            return SourceImage
+                .Clone()
+                .Canny(cannyThreshold, cannyThresholdLinking)
+                .Convert<Bgr, byte>();
+        }
+
+        private Image<Gray, byte> GaussianBlur(Image<Bgr, byte> image, int redius = 5)
+        {
+            return SourceImage
+                .Convert<Gray, byte>()
+                .SmoothGaussian(redius);
+        }
+
+        private Image<Gray, byte> SearchArea(Gray color, int radius = 5, int thresholdValue = 80)
+        {
+            return GaussianBlur(SourceImage, radius)
+                .ThresholdBinary(new Gray(thresholdValue), color);
+        }
+
+        private VectorOfVectorOfPoint ApproxContours(VectorOfVectorOfPoint contours)
+        {
+            VectorOfVectorOfPoint approxContours = new VectorOfVectorOfPoint(contours.Size);
+
+            for (int i = 0; i < contours.Size; i++)
+            {
+                CvInvoke.ApproxPolyDP(
+                    contours[i],
+                    approxContours[i],
+                    CvInvoke.ArcLength(contours[i], true) * 0.05,
+                true);
+            }
+            return approxContours;
+        }
+
+        private VectorOfVectorOfPoint GetContours(Image<Gray, byte> img)
+        {
+            VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
+
+            CvInvoke.FindContours(
+                 img,
+                 contours,
+                 null,
+                 RetrType.List,
+                 ChainApproxMethod.ChainApproxSimple
+             );
+
+            return contours;
+        }
+
+        private bool IsRectangle(VectorOfPoint contour)
+        {
+            if (contour.Size != 4)
+            {
+                return false;
+            }
+
+            Point[] points = contour.ToArray();
+
+            int delta = 10;
+            LineSegment2D[] edges = PointCollection.PolyLine(points, true);
+
+            for (int i = 0; i < edges.Length; i++)
+            {
+                double angle = Math.Abs(edges[(i + 1) %
+                edges.Length].GetExteriorAngleDegree(edges[i]));
+                if (angle < 90 - delta || angle > 90 + delta)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         public Editor() { }
 
         public Editor(int width, int height)
@@ -97,18 +220,12 @@ namespace ImageEditor
             DefaultImage = new Image<Bgr, byte>(width, height);
         }
 
-        public void DrawCircly(int x, int y)
+        public int GetPrimitivesCount()
         {
-            Point center = new Point(x, y);
-            int radius = 2;
-            int thickness = 2;
-            var color = new Bgr(Color.Blue).MCvScalar;
-
-            CvInvoke.Circle(SourceImage, center, radius, color, thickness);
-            OnChangeImage(SourceImage);
+            return prCount;
         }
 
-        public void ForEach(forEachDelegate<int, int, byte> callback, int channel = 0)
+        private void ForEach(forEachDelegate<int, int, byte> callback, int channel = 0)
         {
             for (int width = 0; width < SourceImage.Width; width++)
             {
@@ -119,7 +236,7 @@ namespace ImageEditor
             }
         }
 
-        public void ForEach(forEachDelegateWithChannel<int, int, int, byte> callback)
+        private void ForEach(forEachDelegateWithChannel<int, int, int, byte> callback)
         {
             for (int channel = 0; channel < SourceImage.NumberOfChannels; channel++)
             {
@@ -133,7 +250,7 @@ namespace ImageEditor
             }
         }
 
-        public void ForEach(forEachDelegateWithChannel<int, int, int, byte> callback, Image<Bgr, byte> img)
+        static void ForEach(forEachDelegateWithChannel<int, int, int, byte> callback, Image<Bgr, byte> img)
         {
             for (int channel = 0; channel < img.NumberOfChannels; channel++)
             {
@@ -353,14 +470,6 @@ namespace ImageEditor
             return this;
         }
 
-        private Image<Bgr, byte> CannyEffect(double cannyThreshold = 80.0, double cannyThresholdLinking = 40.0)
-        {
-            return SourceImage
-                .Clone()
-                .Canny(cannyThreshold, cannyThresholdLinking)
-                .Convert<Bgr, byte>();
-        }
-
         public Editor CellShading(double cannyThreshold = 80.0, double cannyThresholdLinking = 40.0)
         {
             Image<Bgr, byte> edges = CannyEffect(cannyThreshold, cannyThresholdLinking);
@@ -399,17 +508,16 @@ namespace ImageEditor
             return Map((channel, height, width, color) => Convert.ToByte(color + brightness));
         }
 
-
         public Editor ChangeContrast(byte contrast)
         {
             return Map((channel, height, width, color) => Convert.ToByte(color * contrast));
         }
 
-        public Editor SummationImage(Editor secondImage, double percentFirstImage, double percentSecondImage)
+        public Editor SummationImage(Image<Bgr, byte> secondImage, double percentFirstImage = 1.0, double percentSecondImage = 1.0)
         {
             return Map((channel, height, width, color) => AdditionColor(
                 Convert.ToByte(color * percentFirstImage),
-                Convert.ToByte(SourceImage.Data[height, width, channel] * percentSecondImage)
+                Convert.ToByte(secondImage.Data[height, width, channel] * percentSecondImage)
             ));
         }
 
@@ -604,7 +712,7 @@ namespace ImageEditor
         {
             double angle = _angle * Math.PI / 180;
 
-            Image<Bgr, byte> resultImage = new Image<Bgr, byte>(SourceImage.Size);
+            Image<Bgr, byte> resultImage = SourceImage.CopyBlank();
 
             ForEach((channel, height, width, color) =>
             {
@@ -634,10 +742,7 @@ namespace ImageEditor
 
         public Editor Reflect(int qX = 1, int qY = 1)
         {
-            Image<Bgr, byte> resultImage = new Image<Bgr, byte>(
-                GetImageWidth(),
-                GetImageHeight()
-            );
+            Image<Bgr, byte> resultImage = SourceImage.CopyBlank();
 
             ForEach((channel, height, width, color) =>
             {
@@ -656,51 +761,6 @@ namespace ImageEditor
             return this;
         }
 
-        private Image<Bgr, byte> BilinearInterp(Image<Bgr, byte> img, double scalingWidth, double scalingHeight)
-        {
-            Image<Bgr, byte> resultImage = new Image<Bgr, byte>(img.Size);
-            
-
-            ForEach((channel, height, width, color) =>
-            {
-                if (color == 0)
-                {
-                    byte floorX = (byte)(width / scalingWidth);
-                    double ratioX = width / scalingWidth - floorX;
-                    double inverseXratio = 1 - ratioX;
-
-                    byte floorY = (byte)(height / scalingHeight);
-                    double ratioY = height / scalingHeight - floorY;
-                    double inverseYratio = 1 - ratioY;
-
-                    if (floorX < SourceImage.Width - 1 && floorX >= 0 &&
-                       floorY < SourceImage.Height - 1 && floorY >= 0)
-                    {
-                        resultImage.Data[
-                            height,
-                            width,
-                            channel
-                        ] = (byte)(
-                            (GetColor(floorY, floorY, channel) * inverseXratio +
-                            GetColor(floorY, floorX + 1, channel) * ratioX) * inverseYratio + 
-                            (GetColor(floorY + 1, floorX, channel) * inverseXratio +
-                            GetColor(floorY + 1, floorX + 1, channel) * ratioX) * ratioY
-                        );
-                    }
-                } else
-                {
-                    resultImage.Data[
-                        height,
-                        width,
-                        channel
-                    ] = color;
-                }
-
-            }, img);
-
-            return resultImage;
-        }
-
         public Editor CropToHomography(PointF[] points)
         {
             PointF[] destPoints = new PointF[]
@@ -716,6 +776,140 @@ namespace ImageEditor
             SourceImage = destImage;
 
             return this;
+        }
+
+        public void DrawCircly(int x, int y)
+        {
+            Point center = new Point(x, y);
+            int radius = 2;
+            int thickness = 2;
+            var color = new Bgr(Color.Blue).MCvScalar;
+
+            CvInvoke.Circle(SourceImage, center, radius, color, thickness);
+            OnChangeImage(SourceImage);
+        }
+
+        public Editor GaussianBlur(int redius = 5)
+        {
+            SourceImage = SourceImage
+                .Convert<Gray, byte>()
+                .SmoothGaussian(redius)
+                .Convert<Bgr, byte>();
+
+            return this;
+        }
+
+        public Editor DrawContours(Bgr color, int thresholdValue)
+        {
+            VectorOfVectorOfPoint contours = GetContours(SearchArea(new Gray(255), 5, thresholdValue));
+
+            Image<Bgr, byte> contoursImage = SourceImage.Copy();
+
+            for (int i = 0; i < contours.Size; i++)
+            {
+                var points = contours[i].ToArray();
+                contoursImage.Draw(points, color, 2);
+            }
+
+            SourceImage = contoursImage;
+
+            return this;
+        }
+
+        public Editor DrawTriangles(Bgr color, int minArea, int thresholdValue)
+        {
+            VectorOfVectorOfPoint contours = ApproxContours(GetContours(SearchArea(new Gray(255), 5)));
+            prCount = 0;
+
+            Image<Bgr, byte> contoursImage = SourceImage.Copy();
+
+            for (int i = 0; i < contours.Size; i++)
+            {
+                if (contours[i].Size == 3 && CvInvoke.ContourArea(contours[i], false) > minArea)
+                {
+                    Point[] points = contours[i].ToArray();
+
+                    contoursImage.Draw(
+                        new Triangle2DF(points[0], points[1], points[2]),
+                        color,
+                        2
+                    );
+                    prCount++;
+                }
+            }
+
+            SourceImage = contoursImage;
+
+            return this;
+        }
+
+        public Editor DrawRectangles(Bgr color, int minArea, int thresholdValue)
+        {
+            VectorOfVectorOfPoint contours = ApproxContours(GetContours(SearchArea(new Gray(255), 5)));
+            prCount = 0;
+
+            Image<Bgr, byte> contoursImage = SourceImage.Copy();
+
+            for (int i = 0; i < contours.Size; i++)
+            {
+                if (IsRectangle(contours[i]) && CvInvoke.ContourArea(contours[i], false) > minArea)
+                {
+                    contoursImage.Draw(
+                        CvInvoke.MinAreaRect(contours[i]),
+                        color,
+                        2
+                    );
+                    prCount++;
+                }
+            }
+
+            SourceImage = contoursImage;
+
+            return this;
+        }
+
+        public Editor DrawCircles(Bgr color, int minDistance = 250, int acTreshold = 36, int minRadius = 0)
+        {
+            Image<Gray, byte> bluredImage = GaussianBlur(SourceImage, 9);
+            prCount = 0;
+
+            List<CircleF> circles = new List<CircleF>(CvInvoke.HoughCircles(
+                bluredImage,
+                HoughType.Gradient,
+                1.0,
+                minDistance,
+                100,
+                acTreshold,
+                minRadius
+            ));
+
+
+            Image<Bgr, byte> resultImage = SourceImage.Copy();
+
+            foreach (CircleF circle in circles)
+            {
+                resultImage.Draw(
+                    circle, 
+                    new Bgr(Color.Blue), 
+                    2
+                );
+                prCount++;
+            }
+
+            SourceImage = resultImage;
+
+            return this;
+        }
+
+        public Editor SelectColor(int color, int rangeDelta = 10)
+        {
+            return this.SummationImage(SourceImage
+                .Convert<Hsv, byte>()
+                .Split()[0]
+                .InRange(
+                    new Gray(color - rangeDelta),
+                    new Gray(color + rangeDelta)                )                .Convert<Bgr, byte>()
+            );
         }
     }
 }
