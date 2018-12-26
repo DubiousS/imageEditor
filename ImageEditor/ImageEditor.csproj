@@ -57,16 +57,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Forms\CellShadingForm.cs">
+    <Compile Include="Forms\filters\CellShadingForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\CellShadingForm.Designer.cs">
+    <Compile Include="Forms\filters\CellShadingForm.Designer.cs">
       <DependentUpon>CellShadingForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ChannelsForm.cs">
+    <Compile Include="Forms\filters\ChannelsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\ChannelsForm.Designer.cs">
+    <Compile Include="Forms\filters\ChannelsForm.Designer.cs">
       <DependentUpon>ChannelsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Editor.cs" />
@@ -78,59 +78,77 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Forms\ScalingForm.cs">
+    <Compile Include="Forms\afins\ScalingForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\ScalingForm.Designer.cs">
+    <Compile Include="Forms\afins\ScalingForm.Designer.cs">
       <DependentUpon>ScalingForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ShearingForm.cs">
+    <Compile Include="Forms\afins\ShearingForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\ShearingForm.Designer.cs">
+    <Compile Include="Forms\afins\ShearingForm.Designer.cs">
       <DependentUpon>ShearingForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ReflectForm.cs">
+    <Compile Include="Forms\afins\ReflectForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\ReflectForm.Designer.cs">
+    <Compile Include="Forms\afins\ReflectForm.Designer.cs">
       <DependentUpon>ReflectForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\RotateForm.cs">
+    <Compile Include="Forms\afins\RotateForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\RotateForm.Designer.cs">
+    <Compile Include="Forms\afins\RotateForm.Designer.cs">
       <DependentUpon>RotateForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\SearchGeometryForm.cs">
+    <Compile Include="Forms\detect\SearchGeometryForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\SearchGeometryForm.Designer.cs">
+    <Compile Include="Forms\detect\SearchGeometryForm.Designer.cs">
       <DependentUpon>SearchGeometryForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="VideoStream.cs" />
-    <Compile Include="Forms\WindowFilterForm.cs">
+    <Compile Include="Forms\detect\SearchTextForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\WindowFilterForm.Designer.cs">
+    <Compile Include="Forms\detect\SearchTextForm.Designer.cs">
+      <DependentUpon>SearchTextForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\detect\VideoDetectorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\detect\VideoDetectorForm.Designer.cs">
+      <DependentUpon>VideoDetectorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VideoStream.cs" />
+    <Compile Include="Forms\filters\WindowFilterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\filters\WindowFilterForm.Designer.cs">
       <DependentUpon>WindowFilterForm.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Forms\CellShadingForm.resx">
+    <EmbeddedResource Include="Forms\detect\SearchTextForm.resx">
+      <DependentUpon>SearchTextForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\detect\VideoDetectorForm.resx">
+      <DependentUpon>VideoDetectorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\filters\CellShadingForm.resx">
       <DependentUpon>CellShadingForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AppForm.resx">
       <DependentUpon>AppForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ChannelsForm.resx">
+    <EmbeddedResource Include="Forms\filters\ChannelsForm.resx">
       <DependentUpon>ChannelsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ScalingForm.resx">
+    <EmbeddedResource Include="Forms\afins\ScalingForm.resx">
       <DependentUpon>ScalingForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\SearchGeometryForm.resx">
+    <EmbeddedResource Include="Forms\detect\SearchGeometryForm.resx">
       <DependentUpon>SearchGeometryForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\WindowFilterForm.resx">
+    <EmbeddedResource Include="Forms\filters\WindowFilterForm.resx">
       <DependentUpon>WindowFilterForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -142,15 +160,17 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Forms\ShearingForm.resx">
+    <EmbeddedResource Include="Forms\afins\ShearingForm.resx">
       <DependentUpon>ShearingForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ReflectForm.resx">
+    <EmbeddedResource Include="Forms\afins\ReflectForm.resx">
       <DependentUpon>ReflectForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\RotateForm.resx">
+    <EmbeddedResource Include="Forms\afins\RotateForm.resx">
       <DependentUpon>RotateForm.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="languages\eng.traineddata" />
+    <None Include="languages\rus.traineddata" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

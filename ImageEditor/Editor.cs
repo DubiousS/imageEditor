@@ -9,6 +9,7 @@ using Emgu.CV;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
+using Emgu.CV.OCR;
 
 namespace ImageEditor
 {
@@ -29,7 +30,7 @@ namespace ImageEditor
             set
             {
                 _sourceImage = value;
-                OnChangeImage(this.GetImage());
+                OnChangeImage(GetImage());
             }
         }
 
@@ -49,6 +50,7 @@ namespace ImageEditor
         public static byte BLUE_CHANNEL = 0;
         public static byte GREEN_CHANNEL = 1;
         public static byte RED_CHANNEL = 2;
+        public static string LANGUAGES_PATH = "C:\\tessdata";
 
         private static byte ToFourColor(double color)
         {
@@ -136,6 +138,29 @@ namespace ImageEditor
             return resultImage;
         }
 
+        public static Image<Bgr, byte> FaceDetector(Mat frame)
+        {
+            Image<Bgr, byte> result = frame.ToImage<Bgr, byte>();
+            using (CascadeClassifier cascadeClassifier = new CascadeClassifier("C:\\faceDetector\\haarcascade_frontalface_default.xml"))
+            {
+                Image<Gray, byte> grayImage = result.Convert<Gray, byte>();
+
+                Rectangle[] facesDetected = cascadeClassifier.DetectMultiScale(
+                    grayImage,
+                    1.1,
+                    10,
+                    new Size(20, 20)
+                );
+
+                foreach (Rectangle face in facesDetected)
+                {
+                    result.Draw(face, new Bgr(Color.Yellow), 2);
+                }
+            }
+
+            return result;
+        }
+
         private Image<Bgr, byte> CannyEffect(double cannyThreshold = 80.0, double cannyThresholdLinking = 40.0)
         {
             return SourceImage
@@ -144,11 +169,11 @@ namespace ImageEditor
                 .Convert<Bgr, byte>();
         }
 
-        private Image<Gray, byte> GaussianBlur(Image<Bgr, byte> image, int redius = 5)
+        private Image<Gray, byte> GaussianBlur(Image<Bgr, byte> image, int radius = 5)
         {
             return SourceImage
                 .Convert<Gray, byte>()
-                .SmoothGaussian(redius);
+                .SmoothGaussian(radius);
         }
 
         private Image<Gray, byte> SearchArea(Gray color, int radius = 5, int thresholdValue = 80)
@@ -167,7 +192,8 @@ namespace ImageEditor
                     contours[i],
                     approxContours[i],
                     CvInvoke.ArcLength(contours[i], true) * 0.05,
-                true);
+                    true
+                );
             }
             return approxContours;
         }
@@ -302,6 +328,8 @@ namespace ImageEditor
                 if (result == DialogResult.OK)
                 {
                     string fileName = openFileDialog.FileName;
+
+                    MessageBox.Show(fileName);
 
                     SourceImage = new Image<Bgr, byte>(fileName);
                     DefaultImage = SourceImage.Clone();
@@ -910,6 +938,79 @@ namespace ImageEditor
                     new Gray(color - rangeDelta),
                     new Gray(color + rangeDelta)                )                .Convert<Bgr, byte>()
             );
+        }
+
+        public string SearchText(Image<Bgr, byte> img, int iterations = 251, int thresholdValue = 80, string language = "eng")
+        {
+            VectorOfVectorOfPoint contours = GetContours(
+                GaussianBlur(img, 5).ThresholdBinary(new Gray(thresholdValue), new Gray(255)).Dilate(iterations)
+            );
+
+            List<Image<Bgr, byte>> roiImages = new List<Image<Bgr, byte>>();
+
+            for (int i = 0; i < contours.Size; i++)
+            {
+                if (CvInvoke.ContourArea(contours[i], false) > 50)
+                {
+                    Rectangle rect = CvInvoke.BoundingRectangle(contours[i]);
+
+                    img.ROI = rect;
+
+                    roiImages.Add(img.Copy());
+
+                    img.ROI = Rectangle.Empty;
+                }
+            }
+
+            Tesseract ocr = new Tesseract(LANGUAGES_PATH, language, OcrEngineMode.Default);
+
+            string text = "";
+
+            roiImages.ForEach((Image<Bgr, byte> roiImage) => {
+                ocr.SetImage(roiImage);
+                ocr.Recognize();
+                text += ocr.GetUTF8Text();
+            });
+
+            return text;
+        }
+
+        public string SearchText(int iterations = 251, int thresholdValue = 80, string language = "eng")
+        {
+            VectorOfVectorOfPoint contours = GetContours(SearchArea(new Gray(255), 5, thresholdValue).Dilate(iterations));
+
+            Image<Bgr, byte> copy = SourceImage.Copy();
+            List<Image<Bgr, byte>> roiImages = new List<Image<Bgr, byte>>();
+
+            for (int i = 0; i < contours.Size; i++)
+            {
+                if (CvInvoke.ContourArea(contours[i], false) > 50)
+                {
+                    Rectangle rect = CvInvoke.BoundingRectangle(contours[i]);
+
+                    copy.Draw(rect, new Bgr(Color.Blue), 1);
+
+                    SourceImage.ROI = rect;
+
+                    roiImages.Add(SourceImage.Copy());
+
+                    SourceImage.ROI = Rectangle.Empty;
+                }
+            }
+
+            SourceImage = copy;
+
+            Tesseract ocr = new Tesseract(LANGUAGES_PATH, language, OcrEngineMode.Default);
+
+            string text = "";
+
+            roiImages.ForEach((Image<Bgr, byte> roiImage) => {
+                ocr.SetImage(roiImage);
+                ocr.Recognize();
+                text += ocr.GetUTF8Text();
+            });
+
+            return text;
         }
     }
 }

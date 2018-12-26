@@ -52,6 +52,8 @@
             this.homographyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ApplyChangesButton = new System.Windows.Forms.Button();
             this.searchGeometryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.textDetectorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.videoDetectorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.defaultImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sourceImage)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -102,11 +104,13 @@
             // asdaToolStripMenuItem
             // 
             this.asdaToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.filtersToolStripMenuItem,
             this.channelsToolStripMenuItem,
-            this.resetToolStripMenuItem,
+            this.filtersToolStripMenuItem,
             this.affinsToolStripMenuItem,
-            this.searchGeometryToolStripMenuItem});
+            this.searchGeometryToolStripMenuItem,
+            this.resetToolStripMenuItem,
+            this.textDetectorToolStripMenuItem,
+            this.videoDetectorToolStripMenuItem});
             this.asdaToolStripMenuItem.Name = "asdaToolStripMenuItem";
             this.asdaToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
             this.asdaToolStripMenuItem.Text = "IMAGE";
@@ -244,6 +248,20 @@
             this.searchGeometryToolStripMenuItem.Text = "search geometry";
             this.searchGeometryToolStripMenuItem.Click += new System.EventHandler(this.OpenSearchGeometryModal);
             // 
+            // textDetectorToolStripMenuItem
+            // 
+            this.textDetectorToolStripMenuItem.Name = "textDetectorToolStripMenuItem";
+            this.textDetectorToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.textDetectorToolStripMenuItem.Text = "text detector";
+            this.textDetectorToolStripMenuItem.Click += new System.EventHandler(this.OpenSearchTextModal);
+            // 
+            // videoDetectorToolStripMenuItem
+            // 
+            this.videoDetectorToolStripMenuItem.Name = "videoDetectorToolStripMenuItem";
+            this.videoDetectorToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.videoDetectorToolStripMenuItem.Text = "video detector";
+            this.videoDetectorToolStripMenuItem.Click += new System.EventHandler(this.OpenVideoDetector);
+            // 
             // AppForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -289,6 +307,8 @@
         private System.Windows.Forms.ToolStripMenuItem reflectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem homographyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem searchGeometryToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem textDetectorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem videoDetectorToolStripMenuItem;
     }
 }
 

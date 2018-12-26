@@ -156,5 +156,19 @@ namespace ImageEditor
             searchGeometry.Show();
 
         }
+
+        private void OpenSearchTextModal(object sender, EventArgs e)
+        {
+            SearchTextForm searchText = new SearchTextForm(Editor);
+
+            searchText.Show();
+        }
+
+        private void OpenVideoDetector(object sender, EventArgs e)
+        {
+            VideoDetectorForm videoDetector = new VideoDetectorForm();
+
+            videoDetector.Show();
+        }
     }
 }
